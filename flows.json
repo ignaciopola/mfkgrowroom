@@ -1,0 +1,2342 @@
+[
+    {
+        "id": "04d22b6eb9b1ba39",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a975aa23e79d4672",
+        "type": "mqtt in",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Arduino-IN",
+        "topic": "arduino",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "d58689239b042014",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 60,
+        "y": 280,
+        "wires": [
+            [
+                "c12d119a4194bf0a",
+                "0431994d5734ee58",
+                "bd05139263755051",
+                "e0f605a9d853de87",
+                "6a161759ab60b51d",
+                "6142f9619b0f3a25",
+                "b11c57cda3bb0404",
+                "7d63bb3b503b0a8f",
+                "41a8f95681ff7bbd",
+                "09fa7aa3dc2e4a8f",
+                "8d5b4dbdad85339a",
+                "8f9194e2aa023dd6",
+                "09fc8853d2642712"
+            ]
+        ]
+    },
+    {
+        "id": "ecd3e043b2720975",
+        "type": "mqtt out",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Arduino-OUT",
+        "topic": "arduino",
+        "qos": "2",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "d58689239b042014",
+        "x": 1550,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "db93a433b543e07f",
+        "type": "ui_gauge",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Temperatura Actual",
+        "group": "be13decce53ec3cc",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperatura",
+        "label": "ºC",
+        "format": "{{value}}",
+        "min": "5",
+        "max": "45",
+        "colors": [
+            "#1988f0",
+            "#00d103",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 890,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "b336b0756d76dc3f",
+        "type": "ui_gauge",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Humedad Actual",
+        "group": "be13decce53ec3cc",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Humedad",
+        "label": "%",
+        "format": "{{value}}",
+        "min": "30",
+        "max": "100",
+        "colors": [
+            "#e5b738",
+            "#53d62e",
+            "#001eff"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 880,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "786a12f897ef46ce",
+        "type": "ui_gauge",
+        "z": "04d22b6eb9b1ba39",
+        "name": "CO2 Actual",
+        "group": "be13decce53ec3cc",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "CO2",
+        "label": "%",
+        "format": "{{value}}",
+        "min": "350",
+        "max": "1500",
+        "colors": [
+            "#529dff",
+            "#e89696",
+            "#eb0023"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 870,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "bd05139263755051",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Fx-Sensores",
+        "func": "var tipo_mensaje=msg.payload.ty.toString();\nif (tipo_mensaje===\"s\")\n{\n\n    var t1={\"payload\":msg.payload.t1};\n    \n    var h1={\"payload\":msg.payload.h1};\n\n    var t2 = { \"payload\": msg.payload.t2 };\n\n    var h2 = { \"payload\": msg.payload.h2 };\n\n    var t3 = { \"payload\": msg.payload.t3 };\n\n    var h3 = { \"payload\": msg.payload.h3 };\n    var t4 = { \"payload\": msg.payload.t4 };\n    \n    var c={\"payload\":msg.payload.co2};\n    \n    var hs={\"payload\":msg.payload.hs};\n\n\n    //CÁLCULO VPD\n    var temp=msg.payload.t1;\n    //SI ES LA DE LA HOJA RESTÁ 2 \n    temp=temp-2; \n\n    var hum=msg.payload.h1;\n    const euler = Math.E; // Constante de Euler\n   \n    var SVP = 0.61078 * euler ** (17.2694 * temp / (temp + 237.3));\n    var VPD = ((100-hum) / 100) * SVP;\n    VPD = VPD*1000;\n    VPD = Math.round(VPD);\n    VPD = VPD / 1000;\n    var v={\"payload\":VPD};\n\n    return [t1, h1, c, hs, v, t2, h2, t3, h3,t4];\n}",
+        "outputs": 10,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 100,
+        "wires": [
+            [
+                "db93a433b543e07f",
+                "28765f48a5f05932"
+            ],
+            [
+                "b336b0756d76dc3f",
+                "eb4278c56dc9f361"
+            ],
+            [
+                "786a12f897ef46ce",
+                "fd51b78f0ad02146"
+            ],
+            [
+                "8e902aafc2d50f03"
+            ],
+            [
+                "4b8a7c6e4d292392",
+                "ad36fc9ce25ba7af"
+            ],
+            [
+                "3ec6541dc0968421"
+            ],
+            [
+                "b742a60a2a289713"
+            ],
+            [
+                "1d3240262d15a01f"
+            ],
+            [
+                "0dbcef39dcd8fae9"
+            ],
+            [
+                "7c5a495df685e8a7"
+            ]
+        ]
+    },
+    {
+        "id": "c12d119a4194bf0a",
+        "type": "debug",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Arduino dice",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 230,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "0431994d5734ee58",
+        "type": "debug",
+        "z": "04d22b6eb9b1ba39",
+        "name": "complete msg",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 240,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "28765f48a5f05932",
+        "type": "ui_chart",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Gráfico Temperatura",
+        "group": "be13decce53ec3cc",
+        "order": 3,
+        "width": "0",
+        "height": "0",
+        "label": "Gráfico Temperatura",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "50",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 900,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "eb4278c56dc9f361",
+        "type": "ui_chart",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Gráfico Humedad",
+        "group": "be13decce53ec3cc",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "label": "Gráfico Humedad",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "100",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 910,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fd51b78f0ad02146",
+        "type": "ui_chart",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Gráfico CO2",
+        "group": "be13decce53ec3cc",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "label": "Gráfico CO2",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "200",
+        "ymax": "1500",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 890,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8e902aafc2d50f03",
+        "type": "ui_text",
+        "z": "04d22b6eb9b1ba39",
+        "group": "eb3576ffe2fbe5a1",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "hora",
+        "label": "Hora",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 870,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "06093b0bf9c0bfcf",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Config Luces",
+        "group": "3758853a55792187",
+        "order": 1,
+        "width": 0,
+        "height": 1,
+        "label": "Luces",
+        "stateField": "payload",
+        "enableField": "enable",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "enabled_show",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            },
+            {
+                "label": "AUTO",
+                "value": "2",
+                "valueType": "str",
+                "color": "#ff6666"
+            }
+        ],
+        "topic": "",
+        "x": 910,
+        "y": 620,
+        "wires": [
+            [
+                "1d5b1e9a20b809b4"
+            ]
+        ]
+    },
+    {
+        "id": "79f8af710de8a47d",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Config Humidificador",
+        "group": "3758853a55792187",
+        "order": 6,
+        "width": 0,
+        "height": 1,
+        "label": "Humidificador",
+        "stateField": "payload",
+        "enableField": "enable",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "enabled_show",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            },
+            {
+                "label": "AUTO",
+                "value": "2",
+                "valueType": "str",
+                "color": "#ff6666"
+            }
+        ],
+        "topic": "",
+        "x": 940,
+        "y": 780,
+        "wires": [
+            [
+                "af23871baabbf1ca"
+            ]
+        ]
+    },
+    {
+        "id": "2683e6daea34b605",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Config CO2",
+        "group": "3758853a55792187",
+        "order": 4,
+        "width": 0,
+        "height": 1,
+        "label": "CO2",
+        "stateField": "payload",
+        "enableField": "enable",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "enabled_show",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            },
+            {
+                "label": "AUTO",
+                "value": "2",
+                "valueType": "str",
+                "color": "#ff6666"
+            }
+        ],
+        "topic": "",
+        "x": 910,
+        "y": 720,
+        "wires": [
+            [
+                "f0171921de13c0fd"
+            ]
+        ]
+    },
+    {
+        "id": "cebbe7b9d9937b79",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Config Riego",
+        "group": "3758853a55792187",
+        "order": 5,
+        "width": 0,
+        "height": 1,
+        "label": "Riego",
+        "stateField": "payload",
+        "enableField": "enable",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "enabled_show",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            },
+            {
+                "label": "AUTO",
+                "value": "2",
+                "valueType": "str",
+                "color": "#ff6666"
+            }
+        ],
+        "topic": "",
+        "x": 910,
+        "y": 840,
+        "wires": [
+            [
+                "95285048df27df1a"
+            ]
+        ]
+    },
+    {
+        "id": "c863142bd6e75416",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Config Extractor",
+        "group": "3758853a55792187",
+        "order": 2,
+        "width": 0,
+        "height": 1,
+        "label": "Extractor",
+        "stateField": "payload",
+        "enableField": "enable",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "enabled_show",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            },
+            {
+                "label": "AUTO",
+                "value": "2",
+                "valueType": "str",
+                "color": "#ff6666"
+            }
+        ],
+        "topic": "",
+        "x": 920,
+        "y": 680,
+        "wires": [
+            [
+                "1cd62107342e36c0"
+            ]
+        ]
+    },
+    {
+        "id": "3197afec658bf3c8",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Config Intractor",
+        "group": "3758853a55792187",
+        "order": 3,
+        "width": 0,
+        "height": 1,
+        "label": "Intractor",
+        "stateField": "payload",
+        "enableField": "enable",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "enabled_show",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            },
+            {
+                "label": "AUTO",
+                "value": "2",
+                "valueType": "str",
+                "color": "#ff6666"
+            }
+        ],
+        "topic": "",
+        "x": 920,
+        "y": 900,
+        "wires": [
+            [
+                "fce8dea330a0aecf"
+            ]
+        ]
+    },
+    {
+        "id": "1d5b1e9a20b809b4",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 3",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"cfg_disp\",\n    relay: \"luz\",\n    valor: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 620,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "af23871baabbf1ca",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 4",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"cfg_disp\",\n    relay: \"humi\",\n    valor: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 780,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "f0171921de13c0fd",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 5",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"cfg_disp\",\n    relay: \"co2\",\n    valor: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 720,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "95285048df27df1a",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 6",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"cfg_disp\",\n    relay: \"riego\",\n    valor: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 840,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "1cd62107342e36c0",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 7",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"cfg_disp\",\n    relay: \"ext\",\n    valor: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 680,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "fce8dea330a0aecf",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 8",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"cfg_disp\",\n    relay: \"int\",\n    valor: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1180,
+        "y": 900,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "e0f605a9d853de87",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Fx_Dispositivos",
+        "func": "var tipo_mensaje=msg.payload.ty.toString();\nif (tipo_mensaje===\"upd\")\n{\n    // var valores={\"payload\":msg.payload.values};\n    var r=msg.payload.disp.split(\",\");\n    var r0 = {\"payload\":parseInt(r[0])};\n    var r1 = {\"payload\":parseInt(r[1])};\n    var r2 = {\"payload\":parseInt(r[2])};\n    var r3 = {\"payload\":parseInt(r[3])};\n    var r4 = {\"payload\":parseInt(r[4])};\n    var r5 = {\"payload\":parseInt(r[5])};\n    // var switchMsg = {\n            //payload: parseInt(values[i]) // Valor del switch actual\n        //};\n    return [r0,r1,r2,r3,r4,r5];\n}\n",
+        "outputs": 6,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 620,
+        "y": 740,
+        "wires": [
+            [
+                "06093b0bf9c0bfcf"
+            ],
+            [
+                "c863142bd6e75416"
+            ],
+            [
+                "2683e6daea34b605"
+            ],
+            [
+                "79f8af710de8a47d"
+            ],
+            [
+                "cebbe7b9d9937b79"
+            ],
+            [
+                "3197afec658bf3c8"
+            ]
+        ]
+    },
+    {
+        "id": "6a161759ab60b51d",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Fx_Fotoperiodo",
+        "func": "var tipo_mensaje=msg.payload.ty.toString();\nif (tipo_mensaje===\"foto\")\n{\n    \n    var fa=msg.payload.f1;\n    var fb=msg.payload.f2;\n    var f1={\"payload\":fa};\n    var f2={\"payload\":fb};\n    // var switchMsg = {\n            //payload: parseInt(values[i]) // Valor del switch actual\n        //};\n    return [f1,f2];\n}\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 1320,
+        "wires": [
+            [
+                "fc15679f28acc735",
+                "054125028f2fce47"
+            ],
+            [
+                "20639cbe7100d7fe"
+            ]
+        ]
+    },
+    {
+        "id": "fc15679f28acc735",
+        "type": "ui_text_input",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Inicio",
+        "label": "Inicio",
+        "tooltip": "",
+        "group": "de77bc03bc6d7441",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 890,
+        "y": 1280,
+        "wires": [
+            [
+                "ae81ca32bb39b14a"
+            ]
+        ]
+    },
+    {
+        "id": "20639cbe7100d7fe",
+        "type": "ui_text_input",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Fin",
+        "label": "Fin",
+        "tooltip": "",
+        "group": "de77bc03bc6d7441",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 890,
+        "y": 1340,
+        "wires": [
+            [
+                "b25f3daf7b8345ec"
+            ]
+        ]
+    },
+    {
+        "id": "054125028f2fce47",
+        "type": "debug",
+        "z": "04d22b6eb9b1ba39",
+        "name": "debug 3",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "ae81ca32bb39b14a",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 9",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"foto\",\n    f1: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 1280,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "b25f3daf7b8345ec",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 10",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"foto\",\n    f2: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 1340,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "6142f9619b0f3a25",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Fx_Humedad",
+        "func": "var tipo_mensaje=msg.payload.ty.toString();\nif (tipo_mensaje===\"hum\")\n{\n    \n    var hmin=msg.payload.h1;\n    var hmax=msg.payload.h2;\n    var h1={\"payload\":hmin};\n    var h2={\"payload\":hmax};\n    // var switchMsg = {\n            //payload: parseInt(values[i]) // Valor del switch actual\n        //};\n    return [h1,h2];\n}\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 1420,
+        "wires": [
+            [
+                "4ac4eb987e735776"
+            ],
+            [
+                "defa0738eb3556f2"
+            ]
+        ]
+    },
+    {
+        "id": "4ac4eb987e735776",
+        "type": "ui_text_input",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Humedad Mínima",
+        "label": "Humedad Mínima",
+        "tooltip": "",
+        "group": "a4b1fc2c866e82cd",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 930,
+        "y": 1420,
+        "wires": [
+            [
+                "91753e7a7a9b9bbd"
+            ]
+        ]
+    },
+    {
+        "id": "defa0738eb3556f2",
+        "type": "ui_text_input",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Humedad Máxima",
+        "label": "Humedad Máxima",
+        "tooltip": "",
+        "group": "a4b1fc2c866e82cd",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 930,
+        "y": 1480,
+        "wires": [
+            [
+                "5ad5e96558729176"
+            ]
+        ]
+    },
+    {
+        "id": "91753e7a7a9b9bbd",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 11",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"hum\",\n    h1: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 1420,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "5ad5e96558729176",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 12",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"hum\",\n    h2: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 1480,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "b11c57cda3bb0404",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Fx_Temperatura",
+        "func": "var tipo_mensaje=msg.payload.ty.toString();\nif (tipo_mensaje===\"temp\")\n{\n    \n    var tmin=msg.payload.t1;\n    var tmax=msg.payload.t2;\n    var t1={\"payload\":tmin};\n    var t2={\"payload\":tmax};\n    // var switchMsg = {\n            //payload: parseInt(values[i]) // Valor del switch actual\n        //};\n    return [t1,t2];\n}\n",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 1600,
+        "wires": [
+            [
+                "e6a5ae301f8c35fb"
+            ],
+            [
+                "9a75a22808d4ca71"
+            ]
+        ]
+    },
+    {
+        "id": "e6a5ae301f8c35fb",
+        "type": "ui_text_input",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Temperatura Mínima",
+        "label": "Temperatura Mínima",
+        "tooltip": "",
+        "group": "38b956fae1cd414c",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": false,
+        "className": "",
+        "topicType": "msg",
+        "x": 940,
+        "y": 1580,
+        "wires": [
+            [
+                "57f97eb41672e2e9"
+            ]
+        ]
+    },
+    {
+        "id": "9a75a22808d4ca71",
+        "type": "ui_text_input",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Temperatura Máxima",
+        "label": "Temperatura Máxima",
+        "tooltip": "",
+        "group": "38b956fae1cd414c",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": 300,
+        "topic": "topic",
+        "sendOnBlur": false,
+        "className": "",
+        "topicType": "msg",
+        "x": 940,
+        "y": 1640,
+        "wires": [
+            [
+                "4390b3b84267627c"
+            ]
+        ]
+    },
+    {
+        "id": "57f97eb41672e2e9",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 13",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"temp\",\n    t1: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1160,
+        "y": 1580,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "4390b3b84267627c",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 14",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"hum\",\n    t2: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 1640,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "4b8a7c6e4d292392",
+        "type": "ui_chart",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Gráfico VPD",
+        "group": "be13decce53ec3cc",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "label": "Gráfico VPD",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "0",
+        "ymax": "4",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 890,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ad36fc9ce25ba7af",
+        "type": "ui_gauge",
+        "z": "04d22b6eb9b1ba39",
+        "name": "VPD Actual",
+        "group": "be13decce53ec3cc",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "VPD",
+        "label": "kPa",
+        "format": "{{value}}",
+        "min": "0.17",
+        "max": "3.65",
+        "colors": [
+            "#1988f0",
+            "#00d103",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 870,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "e62b66520a3bf301",
+        "type": "inject",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Actualizar Parámetros",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "arduino",
+        "payload": "{\"tx\":\"node\",\"ty\":\"inicio\"}",
+        "payloadType": "str",
+        "x": 1220,
+        "y": 360,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "42621acfb63efdb8",
+        "type": "mysql",
+        "z": "04d22b6eb9b1ba39",
+        "mydb": "0b477f7711c42bfe",
+        "name": "mysql_arduino",
+        "x": 500,
+        "y": 2280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7d63bb3b503b0a8f",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "INPUT_SENSORES",
+        "func": "var tipo_mensaje=msg.payload.ty.toString();\nif (tipo_mensaje===\"s\")\n{\n\n    var t1=msg.payload.t1;\n    \n    var h1=msg.payload.h1;\n\n    var t2=msg.payload.t2;\n    \n    var h2=msg.payload.h2;\n\n    var t3=msg.payload.t3;\n    \n    var h3=msg.payload.h3;\n\n    var t4=msg.payload.t4;\n    \n    var c=msg.payload.co2;\n    var hs=msg.payload.hs;\n\n        //CÁLCULO VPD\n    var temp1=msg.payload.t1;\n    var temp2=msg.payload.t2;\n    var temp3=msg.payload.t3;\n    //SI ES LA DE LA HOJA RESTÁ 2 \n    temp1=t1-2; \n    temp2=t2-2; \n    temp3=t3-2; \n\n    var hum1=msg.payload.h1;\n    var hum2=msg.payload.h2;\n    var hum3=msg.payload.h3;\n    const euler = Math.E; // Constante de Euler\n   \n    var SVP1 = 0.61078 * euler ** (17.2694 * temp1 / (temp1 + 237.3));\n    var SVP2 = 0.61078 * euler ** (17.2694 * temp2 / (temp2 + 237.3));\n    var SVP3 = 0.61078 * euler ** (17.2694 * temp3 / (temp3 + 237.3));\n    var VPD1 = ((100-hum1) / 100) * SVP1;\n    var VPD2 = ((100-hum2) / 100) * SVP2;\n    var VPD3 = ((100-hum3) / 100) * SVP3;\n\n    var now = new Date();\n    var datetime = now.getFullYear() + '-' +\n               ('0' + (now.getMonth() + 1)).slice(-2) + '-' +\n               ('0' + now.getDate()).slice(-2) + ' ' +\n               ('0' + now.getHours()).slice(-2) + ':' +\n               ('0' + now.getMinutes()).slice(-2) + ':' +\n               ('0' + now.getSeconds()).slice(-2);\n\n\n\n    var query = { \"topic\": \"INSERT INTO sensores (hora,temperatura1,humedad1,temperatura2,humedad2,temperatura3,humedad3,temperatura4,co2,vpd1,vpd2,vpd3) VALUES ('\" + datetime + \"','\" + t1 + \"','\" + h1 + \"','\" + t2 + \"','\" + h2 + \"','\" + t3 + \"','\" + h3 + \"','\" + t4 +\"','\"+c+\"','\"+VPD1+\"','\"+VPD2+\"','\"+VPD3+\"');\"};\n\n\n\n\n    return [query];\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 2200,
+        "wires": [
+            [
+                "42621acfb63efdb8"
+            ]
+        ]
+    },
+    {
+        "id": "0913acaa951385ca",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Actualizar Hora",
+        "func": "\n// Obtener la fecha y hora actuales\nvar currentDate = new Date();\n\n// Crear un objeto JSON con las unidades temporales\nmsg.payload = {\n    ty:\"hs_upd\",\n    y: currentDate.getFullYear(),  // Año\n    m: currentDate.getMonth() + 1, // Mes (se suma 1 porque los meses en JavaScript van de 0 a 11)\n    d: currentDate.getDate(),      // Día\n    h: currentDate.getHours(),     // Hora\n    mi: currentDate.getMinutes(),  // Minuto\n    s: currentDate.getSeconds()    // Segundo\n};\n\n// Devolver el nuevo mensaje\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1300,
+        "y": 320,
+        "wires": [
+            [
+                "ecd3e043b2720975",
+                "a535490a36995128"
+            ]
+        ]
+    },
+    {
+        "id": "a535490a36995128",
+        "type": "debug",
+        "z": "04d22b6eb9b1ba39",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1620,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "9220ff1736f3273f",
+        "type": "inject",
+        "z": "04d22b6eb9b1ba39",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "1",
+        "topic": "",
+        "payload": "a",
+        "payloadType": "str",
+        "x": 1110,
+        "y": 320,
+        "wires": [
+            [
+                "0913acaa951385ca"
+            ]
+        ]
+    },
+    {
+        "id": "41a8f95681ff7bbd",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Registro_Eventos",
+        "func": "// Función para comparar los estados actual y anterior y determinar qué cambió\nfunction compararEstados(actual, anterior) {\n    const estados_actual = actual.split(',');\n    const estados_anterior = anterior.split(',');\n\n    const cambios = [];\n    for (let i = 0; i < estados_actual.length; i++) {\n        if (estados_actual[i] !== estados_anterior[i]) {\n            cambios.push({ indice: i, estado_anterior: estados_anterior[i], estado_actual: estados_actual[i] });\n        }\n    }\n    return cambios;\n}\n\n// Función para interpretar los cambios y generar las consultas SQL\nfunction generarConsultasSQL(cambios) {\n    const consultas = [];\n    cambios.forEach(cambio => {\n        let tipo = `${cambio.indice}${cambio.estado_actual}`;\n        let tipo_descripcion = \"\";\n\n        switch (cambio.indice) {\n            case 0:  // Luces\n                tipo_descripcion = cambio.estado_actual === '1' ? \"Encendido Luces\" : \"Apagado Luces\";\n                break;\n            case 1:  // Extractor\n                tipo_descripcion = cambio.estado_actual === '1' ? \"Encendido Extractor\" : \"Apagado Extractor\";\n                break;\n            case 2:  // Intractor\n                tipo_descripcion = cambio.estado_actual === '1' ? \"Encendido Intractor\" : \"Apagado Intractor\";\n                break;\n            case 3:  // Humidificador\n                tipo_descripcion = cambio.estado_actual === '1' ? \"Encendido Humidificador\" : \"Apagado Humidificador\";\n                break;\n            case 4:  // Riego\n                tipo_descripcion = cambio.estado_actual === '1' ? \"Inicio Riego\" : \"Fin Riego\";\n                break;\n            \n            case 5:  // Deshumidificador\n                tipo_descripcion = cambio.estado_actual === '1' ? \"Encendido Deshumidificador\" : \"Apagado Deshumidificador\";\n                break;\n            default:\n                tipo_descripcion = \"Estado desconocido\";\n                break;\n        }\n\n        const query = `INSERT INTO eventos (hora, tipo, tipo_descripcion) VALUES ('${datetime}','${tipo}', '${tipo_descripcion}')`;\n        consultas.push(query);\n    });\n    return consultas;\n}\n\nif (msg.payload.hasOwnProperty('rys')) {\n    var now = new Date();\n    var datetime = now.getFullYear() + '-' +\n        ('0' + (now.getMonth() + 1)).slice(-2) + '-' +\n        ('0' + now.getDate()).slice(-2) + ' ' +\n        ('0' + now.getHours()).slice(-2) + ':' +\n        ('0' + now.getMinutes()).slice(-2) + ':' +\n        ('0' + now.getSeconds()).slice(-2);\n\n    const estado_actual = msg.payload.rys || '';\n    const estado_anterior = context.global.get('estado_anterior') || '';\n\n    const cambios = compararEstados(estado_actual, estado_anterior);\n\n    if (cambios.length > 0) {\n        const consultasSQL = generarConsultasSQL(cambios);\n\n        consultasSQL.forEach(query => {\n            node.send({ \"topic\":query });\n        });\n\n        context.global.set('estado_anterior', estado_actual);\n    }\n}\n\n\n\n\n\n\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 2340,
+        "wires": [
+            [
+                "42621acfb63efdb8"
+            ]
+        ]
+    },
+    {
+        "id": "be9deea7f7b32023",
+        "type": "debug",
+        "z": "04d22b6eb9b1ba39",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 2360,
+        "wires": []
+    },
+    {
+        "id": "09fa7aa3dc2e4a8f",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Fx_Relays",
+        "func": "var tipo_mensaje=msg.payload.ty.toString();\nif (tipo_mensaje===\"relays\")\n{\n    // var valores={\"payload\":msg.payload.values};\n    var r=msg.payload.rys.split(\",\");\n    var r0 = {\"payload\":parseInt(r[0])};\n    var r1 = {\"payload\":parseInt(r[1])};\n    var r2 = {\"payload\":parseInt(r[2])};\n    var r3 = {\"payload\":parseInt(r[3])};\n    var r4 = {\"payload\":parseInt(r[4])};\n    var r5 = {\"payload\":parseInt(r[5])};\n    // var switchMsg = {\n            //payload: parseInt(values[i]) // Valor del switch actual\n        //};\n    return [r0,r1,r2,r3,r4,r5];\n}\n",
+        "outputs": 6,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 1040,
+        "wires": [
+            [
+                "02e97d895f58afaf"
+            ],
+            [
+                "6f7e839681b5e8a3"
+            ],
+            [
+                "035279067bef71f9"
+            ],
+            [
+                "285f693f16ca816c"
+            ],
+            [
+                "f8bf6007a3a15820"
+            ],
+            [
+                "9e24e4a3c2d66064"
+            ]
+        ]
+    },
+    {
+        "id": "02e97d895f58afaf",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Luces",
+        "group": "5410ab13669622c9",
+        "order": 1,
+        "width": 0,
+        "height": 1,
+        "label": "Luces",
+        "stateField": "payload",
+        "enableField": "disabled",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "disabled",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            }
+        ],
+        "topic": "",
+        "x": 890,
+        "y": 980,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "285f693f16ca816c",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Humidificador",
+        "group": "5410ab13669622c9",
+        "order": 6,
+        "width": 0,
+        "height": 1,
+        "label": "Humidificador",
+        "stateField": "payload",
+        "enableField": "disabled",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "disabled",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            }
+        ],
+        "topic": "",
+        "x": 920,
+        "y": 1100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "035279067bef71f9",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "CO2",
+        "group": "5410ab13669622c9",
+        "order": 4,
+        "width": 0,
+        "height": 1,
+        "label": "CO2",
+        "stateField": "payload",
+        "enableField": "disabled",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "disabled",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            }
+        ],
+        "topic": "",
+        "x": 890,
+        "y": 1060,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f8bf6007a3a15820",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Riego",
+        "group": "5410ab13669622c9",
+        "order": 5,
+        "width": 0,
+        "height": 1,
+        "label": "Riego",
+        "stateField": "payload",
+        "enableField": "disabled",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "disabled",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            }
+        ],
+        "topic": "",
+        "x": 890,
+        "y": 1140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6f7e839681b5e8a3",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Extractor",
+        "group": "5410ab13669622c9",
+        "order": 2,
+        "width": 0,
+        "height": 1,
+        "label": "Extractor",
+        "stateField": "payload",
+        "enableField": "disabled",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "disabled",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            }
+        ],
+        "topic": "",
+        "x": 900,
+        "y": 1020,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9e24e4a3c2d66064",
+        "type": "ui_multistate_switch",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Intractor",
+        "group": "5410ab13669622c9",
+        "order": 3,
+        "width": 0,
+        "height": 1,
+        "label": "Intractor",
+        "stateField": "payload",
+        "enableField": "disabled",
+        "passthroughField": "passthrough",
+        "inputMsgField": "inputmsg",
+        "rounded": true,
+        "useThemeColors": true,
+        "hideSelectedLabel": false,
+        "multilineLabel": false,
+        "passThrough": "never",
+        "inputMsg": "all",
+        "userInput": "disabled",
+        "options": [
+            {
+                "label": "OFF",
+                "value": "0",
+                "valueType": "str",
+                "color": "#009933"
+            },
+            {
+                "label": "ON",
+                "value": "1",
+                "valueType": "str",
+                "color": "#999999"
+            }
+        ],
+        "topic": "",
+        "x": 900,
+        "y": 1180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "43e9add9c30b5fdd",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 15",
+        "func": "var orden=msg.payload;\nmsg.payload = {\n    tx: \"node\",\n    ty: \"riego\",\n    pulso: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1170,
+        "y": 1720,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "8d5b4dbdad85339a",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Fx_Riego",
+        "func": "var estado_riego = false;\n\nvar tipo_mensaje=msg.payload.ty.toString();\nif (tipo_mensaje===\"riego_on\")\n{\n    var duracionRiego=msg.payload.p;\n    var horaInicioRiego=msg.payload.hs;\n    \n    // Convertir la hora de inicio del riego a segundos\n    var horaInicioSegundos = timeStringToSeconds(horaInicioRiego);\n\n    // Establecer el estado del riego en true\n    estado_riego = true;\n\n    // Iniciar el temporizador para enviar el tiempo transcurrido por primera vez\n    enviarTiempoTranscurrido();\n}\nif (tipo_mensaje===\"pulso_riego\")\n{\n    var duracionRiego=msg.payload.p;\n    var msg = {\"payload\":duracionRiego};\n    node.send([msg]);\n}\n\n// Función para actualizar el tiempo transcurrido y enviarlo periódicamente\nfunction enviarTiempoTranscurrido() {\n    if (estado_riego) \n    {\n        // Obtener la hora actual en formato hh:mm:ss\n        var horaActual = new Date().toLocaleTimeString('en-US', { hour12: false });\n\n        // Convertir la hora actual a segundos\n        var horaActualSegundos = timeStringToSeconds(horaActual);\n\n        // Calcular el tiempo transcurrido en segundos\n        var tiempoTranscurrido = horaActualSegundos - horaInicioSegundos;\n\n        // Enviar el tiempo transcurrido al nodo text editable\n        var msg1 = {\"payload\":duracionRiego};\n        node.send([msg1]);\n\n        // Enviar el tiempo transcurrido en segundos al nodo text NO EDITABLE\n        var msg2 = {\"payload\":\"Encendido: \"+tiempoTranscurrido+\"/\"+duracionRiego};\n        node.send([null, msg2]);\n\n        // Configurar el temporizador para enviar el tiempo transcurrido nuevamente en 1 segundo\n        setTimeout(enviarTiempoTranscurrido, 1000);\n\n        // Verificar si se superó la duración del riego\n        if (tiempoTranscurrido >= duracionRiego) \n        {\n            // Si se superó, establecer el estado del riego en false\n            tiempoTranscurrido=0;\n            estado_riego = false;\n            var msg3 = {\"payload\":\"Apagado\"};\n            \n            node.send([null, msg3]);\n        }\n    }\n}\n\nfunction timeStringToSeconds(timeString) {\n    var parts = timeString.split(':');\n    return (+parts[0]) * 3600 + (+parts[1]) * 60 + (+parts[2]);\n}",
+        "outputs": 2,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "var estado_riego = false;",
+        "finalize": "",
+        "libs": [],
+        "x": 560,
+        "y": 1720,
+        "wires": [
+            [
+                "fc4da2961c30455b"
+            ],
+            [
+                "80b6b81acab46ab8"
+            ]
+        ]
+    },
+    {
+        "id": "80b6b81acab46ab8",
+        "type": "ui_text",
+        "z": "04d22b6eb9b1ba39",
+        "group": "eed644e01fe06fd6",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "name": "Estado Riego",
+        "label": "Estado Riego",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 940,
+        "y": 1780,
+        "wires": []
+    },
+    {
+        "id": "fc4da2961c30455b",
+        "type": "ui_text_input",
+        "z": "04d22b6eb9b1ba39",
+        "name": "pulso_riego",
+        "label": "Duración Riego",
+        "tooltip": "",
+        "group": "eed644e01fe06fd6",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "mode": "text",
+        "delay": "0",
+        "topic": "topic",
+        "sendOnBlur": true,
+        "className": "",
+        "topicType": "msg",
+        "x": 930,
+        "y": 1720,
+        "wires": [
+            [
+                "43e9add9c30b5fdd"
+            ]
+        ]
+    },
+    {
+        "id": "4d0b2fdd1a38978a",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 17",
+        "func": "var orden=parseInt(msg.payload);\nif (orden===1)\n{\n    msg.payload = {\n        tx: \"node\",\n        ty: \"riego\",\n        switch_riego: orden\n    };\n    return msg;\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1190,
+        "y": 1840,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "1f023cf23a10b815",
+        "type": "debug",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Node Dice",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 930,
+        "y": 2120,
+        "wires": []
+    },
+    {
+        "id": "0c5146c870f1a534",
+        "type": "ui_button",
+        "z": "04d22b6eb9b1ba39",
+        "name": "inicio_riego",
+        "group": "eed644e01fe06fd6",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Iniciar Riego",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "1",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 930,
+        "y": 1840,
+        "wires": [
+            [
+                "4d0b2fdd1a38978a"
+            ]
+        ]
+    },
+    {
+        "id": "3ec6541dc0968421",
+        "type": "ui_gauge",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Temperatura Actual 2",
+        "group": "be13decce53ec3cc",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperatura 2",
+        "label": "ºC",
+        "format": "{{value}}",
+        "min": "5",
+        "max": "45",
+        "colors": [
+            "#1988f0",
+            "#00d103",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 920,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "b742a60a2a289713",
+        "type": "ui_gauge",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Humedad Actual 2",
+        "group": "be13decce53ec3cc",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Humedad 2",
+        "label": "%",
+        "format": "{{value}}",
+        "min": "30",
+        "max": "100",
+        "colors": [
+            "#e5b738",
+            "#53d62e",
+            "#001eff"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 910,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "1d3240262d15a01f",
+        "type": "ui_gauge",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Temperatura Actual 3",
+        "group": "be13decce53ec3cc",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperatura 3",
+        "label": "ºC",
+        "format": "{{value}}",
+        "min": "5",
+        "max": "45",
+        "colors": [
+            "#1988f0",
+            "#00d103",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 920,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "0dbcef39dcd8fae9",
+        "type": "ui_gauge",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Humedad Actual 3",
+        "group": "be13decce53ec3cc",
+        "order": 7,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Humedad 3",
+        "label": "%",
+        "format": "{{value}}",
+        "min": "30",
+        "max": "100",
+        "colors": [
+            "#e5b738",
+            "#53d62e",
+            "#001eff"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 910,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "7c5a495df685e8a7",
+        "type": "ui_gauge",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Temperatura Actual 4 (mhz)",
+        "group": "be13decce53ec3cc",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "gtype": "gage",
+        "title": "Temperatura 4 (mhz)",
+        "label": "ºC",
+        "format": "{{value}}",
+        "min": "5",
+        "max": "45",
+        "colors": [
+            "#1988f0",
+            "#00d103",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 940,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "dd24bd7d42dd996f",
+        "type": "ui_button",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Aire 26ºC",
+        "group": "912a6d42bb267831",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Prender Aire en 26º",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "1",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 920,
+        "y": 1920,
+        "wires": [
+            [
+                "7b9774c5bb97916f"
+            ]
+        ]
+    },
+    {
+        "id": "f86b3b7f9667f086",
+        "type": "ui_button",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Aire Deshumidificador",
+        "group": "912a6d42bb267831",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Aire Deshu",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "2",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 960,
+        "y": 1960,
+        "wires": [
+            [
+                "7b9774c5bb97916f"
+            ]
+        ]
+    },
+    {
+        "id": "fe55187c28b9b6a7",
+        "type": "ui_button",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Apagar Aire",
+        "group": "912a6d42bb267831",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Apagar Aire",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "0",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 930,
+        "y": 2000,
+        "wires": [
+            [
+                "7b9774c5bb97916f"
+            ]
+        ]
+    },
+    {
+        "id": "7b9774c5bb97916f",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "function 18",
+        "func": "var orden=parseInt(msg.payload);\n\nmsg.payload = {\n    tx: \"node\",\n    ty: \"aire\",\n    orden: orden\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1190,
+        "y": 1960,
+        "wires": [
+            [
+                "ecd3e043b2720975"
+            ]
+        ]
+    },
+    {
+        "id": "8f9194e2aa023dd6",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Fx_Aire",
+        "func": "var tipo_mensaje=msg.payload.ty.toString();\nvar estado_aire;\nif (tipo_mensaje===\"aire\")\n{\n    var orden=parseInt(msg.payload.orden);\n    if (orden===0)\n    {\n        estado_aire = \"Apagado\";\n    }\n    if (orden===1)\n    {\n        estado_aire = \"Prendido en 26ºC\";\n    }\n    if (orden===2)\n    {\n        estado_aire = \"Prendido en Deshumidificador\";\n    }\n    estado_aire={\"payload\":estado_aire};\n    return [estado_aire];\n}\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 1940,
+        "wires": [
+            [
+                "ad16ddb20aaead64",
+                "1f023cf23a10b815"
+            ]
+        ]
+    },
+    {
+        "id": "ad16ddb20aaead64",
+        "type": "ui_text",
+        "z": "04d22b6eb9b1ba39",
+        "group": "912a6d42bb267831",
+        "order": 8,
+        "width": 0,
+        "height": 0,
+        "name": "Estado_Aire",
+        "label": "Estado Aire Acondicionado",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 930,
+        "y": 2040,
+        "wires": []
+    },
+    {
+        "id": "09fc8853d2642712",
+        "type": "function",
+        "z": "04d22b6eb9b1ba39",
+        "name": "Registro_Aire",
+        "func": "var orden_aire_anterior = context.global.get('orden_aire_anterior');\nif (orden_aire_anterior === undefined) {\n    // Inicializar con un valor predeterminado si no está definido\n    orden_aire_anterior = 0; // O cualquier otro valor predeterminado que desees\n}\n\n\nvar tipo_mensaje=msg.payload.ty.toString();\nvar tipo_descripcion_aire;\nvar tipo_aire;\nif (tipo_mensaje===\"aire\")\n{\n    var orden=parseInt(msg.payload.orden);\n    if (orden!==orden_aire_anterior)\n    {\n        if (orden===0)\n        {\n            tipo_descripcion_aire = \"Apagado Aire\";\n            tipo_aire = 70;\n        }\n        if (orden===1)\n        {\n            tipo_descripcion_aire = \"Encendido Aire en 26ºC\";\n            tipo_aire = 71;\n        }\n        if (orden===2)\n        {\n            tipo_descripcion_aire = \"Encendido Aire en Deshu\";\n            tipo_aire = 72;\n        }\n\n        var now = new Date();\n        var datetime = now.getFullYear() + '-' +\n            ('0' + (now.getMonth() + 1)).slice(-2) + '-' +\n            ('0' + now.getDate()).slice(-2) + ' ' +\n            ('0' + now.getHours()).slice(-2) + ':' +\n            ('0' + now.getMinutes()).slice(-2) + ':' +\n            ('0' + now.getSeconds()).slice(-2);\n\n        const query = `INSERT INTO eventos (hora, tipo, tipo_descripcion) VALUES ('${datetime}','${tipo_aire}', '${tipo_descripcion_aire}')`;\n        node.send({ \"topic\": query });\n        context.global.set('orden_aire_anterior', orden);   \n    }\n}",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 2400,
+        "wires": [
+            [
+                "42621acfb63efdb8",
+                "be9deea7f7b32023"
+            ]
+        ]
+    },
+    {
+        "id": "84c3ee5b79db2142",
+        "type": "ui_spacer",
+        "z": "04d22b6eb9b1ba39",
+        "name": "spacer",
+        "group": "912a6d42bb267831",
+        "order": 9,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "d58689239b042014",
+        "type": "mqtt-broker",
+        "name": "MQTT ARDUINO",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "2",
+        "birthRetain": "false",
+        "birthPayload": "Primera prueba",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "be13decce53ec3cc",
+        "type": "ui_group",
+        "name": "Sensores",
+        "tab": "a44882c2305452b2",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "eb3576ffe2fbe5a1",
+        "type": "ui_group",
+        "name": "Hora",
+        "tab": "a44882c2305452b2",
+        "order": 2,
+        "disp": false,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "3758853a55792187",
+        "type": "ui_group",
+        "name": "Configuración Dispositivos",
+        "tab": "a44882c2305452b2",
+        "order": 3,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "de77bc03bc6d7441",
+        "type": "ui_group",
+        "name": "Fotoperiodo",
+        "tab": "a44882c2305452b2",
+        "order": 4,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a4b1fc2c866e82cd",
+        "type": "ui_group",
+        "name": "Humidificador",
+        "tab": "a44882c2305452b2",
+        "order": 5,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "38b956fae1cd414c",
+        "type": "ui_group",
+        "name": "Temperatura Deseada",
+        "tab": "a44882c2305452b2",
+        "order": 6,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "0b477f7711c42bfe",
+        "type": "MySQLdatabase",
+        "name": "arduino",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "arduino",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "5410ab13669622c9",
+        "type": "ui_group",
+        "name": "Estado Dispositivos",
+        "tab": "a44882c2305452b2",
+        "order": 7,
+        "disp": true,
+        "width": "6",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "eed644e01fe06fd6",
+        "type": "ui_group",
+        "name": "Riego",
+        "tab": "a44882c2305452b2",
+        "order": 8,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "912a6d42bb267831",
+        "type": "ui_group",
+        "name": "Aire Acondicionado",
+        "tab": "a44882c2305452b2",
+        "order": 9,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a44882c2305452b2",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]
