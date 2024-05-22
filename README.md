@@ -34,8 +34,6 @@ This repository contains the code and setup instructions for an Arduino-based co
 
 ## Setup Instructions
 1. **Deploy Software on Arduino**:
-   - Install the Arduino IDE from [Arduino's official website](https://www.arduino.cc/en/software).
-   - Connect your Arduino board to your computer and upload the provided C++ code to the board.
 
 2. **AWS EC2 Deployment**:
    - Set up an AWS EC2 instance.
