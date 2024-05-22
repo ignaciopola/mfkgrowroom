@@ -38,6 +38,7 @@ This repository contains the code and setup instructions for an Arduino-based co
 2. **AWS EC2 Deployment**:
    - Set up an AWS EC2 instance.
    - Deploy the Node-RED and MQTT servers on the EC2 instance to allow remote access to the dashboard.
+   - Import flows.json to Node-RED
 
 3. **Database Setup**:
    - Install MySQL on your EC2 instance.
